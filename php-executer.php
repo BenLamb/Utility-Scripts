@@ -1,3 +1,11 @@
+<?php
+/**
+ * PLEASE NOTE: This is a ludicrously insecure script - do not install it on 
+ * any publicly-accessible hosting. It's great for trying out little bits of
+ * PHP without having to save any files, but don't try to use it for anything
+ * other than that!
+ */
+?>
 <html>
 <head>
 	<title>PHP Executer</title>
