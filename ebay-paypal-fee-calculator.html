@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple eBay &amp; PayPal fee calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <style type="text/css">
+    body { padding: 10px; }
+    h1 { text-align: center; }
+    #selling-price-slider { margin-top: 4px;}
+    .results { font-size: 1.5em; font-size: 3vh; text-align: center;}
+    .results .value { font-size: 3em; font-size: 15vh; font-weight: bold; }
+    #total-profit { color: red; }
+    #total-profit.profit { color: green; }
+    .price-preselectors { margin-bottom: 4px; }
+  </style>
+  <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      function recalculate_fees() {
+        var selling_price = parseFloat($('#selling-price').val());
+        var ebay_percent = parseFloat($('#ebay-percent').val());
+        var paypal_percent = parseFloat($('#paypal-percent').val());
+        var paypal_fee = parseFloat($('#paypal-fee').val());
+        var delivery_cost = parseFloat($('#delivery-cost').val());
+        
+        var total_fees = (selling_price * (ebay_percent / 100)) + (selling_price * (paypal_percent / 100)) + paypal_fee + delivery_cost;
+        $('#total-fees').text(String.fromCharCode(163) + total_fees.toFixed(2));
+        var profit = (selling_price - total_fees).toFixed(2);
+        $('#total-profit').text(String.fromCharCode(163) + profit);
+        if (profit > 0) {
+          $('#total-profit').addClass('profit');
+        }
+        else {
+          $('#total-profit').removeClass('profit');
+        }
+      }
+      
+      $('input').keyup(recalculate_fees);
+      
+      // link up slider and selling price input field
+      $('#selling-price-slider').on('input', function() {
+        $('#selling-price').val(parseFloat($(this).val()).toFixed(2));
+        recalculate_fees();
+      })
+      
+      // handle price-preselectors
+      $('.price-preselectors button').click(function() {
+        $('#delivery-cost').val($(this).data('price'));
+        recalculate_fees();
+        return false;
+      });
+      
+      // calculate on page load
+      recalculate_fees();
+      
+    });
+  </script>
+</head>
+<body>
+  <h1>eBay &amp; PayPal fee calculator</h1>
+
+  <div class="container-fluid">
+    <div class="row">
+      <form class="col-sm-6">
+        <div class="form-group">
+          <label for="inputEmail3">Selling price (inc. delivery)</label>
+          
+          <div class="input-group">
+            <span class="input-group-addon">&pound;</span>
+            <input type="number" class="form-control" id="selling-price" placeholder="1" value="1" step="0.01">
+          </div>
+          
+          <input id="selling-price-slider" type="range" value="1" min="0" max="20" step="0.1" />
+        </div>
+        
+        <div class="form-group">
+          <label for="delivery-cost">Actual delivery cost (<a href="http://www.royalmail.com/sites/default/files/RM_OurPrices_Dec2014.pdf" target="_blank">RM</a>)</label>
+          <div class="price-preselectors">
+            <button data-price="0.73" class="btn btn-primary">&pound;0.73</button>
+            <button data-price="1.17" class="btn btn-primary">&pound;1.17</button>
+            <button data-price="2.80" class="btn btn-primary">&pound;2.80</button>
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon">&pound;</span>
+            <input type="text" class="form-control" id="delivery-cost" placeholder="1.17" value="1.17">
+          </div>
+        </div>
+
+        <p><a href="">Adjust rates</a></p>
+        <fieldset>
+          <div class="form-group">
+            <label for="ebay-percent">eBay Final Value Percentage</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="ebay-percent" placeholder="10" value="10">
+              <span class="input-group-addon">%</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="paypal-fee">PayPal fee</label>
+            <div class="input-group">
+              <span class="input-group-addon">&pound;</span>
+              <input type="number" class="form-control" id="paypal-fee" placeholder="0.20" value="0.20" step="0.01">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="paypal-percent">PayPal percentage</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="paypal-percent" placeholder="3.4" value="3.4">
+              <span class="input-group-addon">%</span>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+      
+      <div class="col-sm-6 results">
+        Fees + delivery:
+        <div id="total-fees" class="value">&pound;</div>
+        Profit:
+        <div id="total-profit" class="value">&pound;</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
