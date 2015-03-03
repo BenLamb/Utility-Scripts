@@ -23,11 +23,12 @@ if (!empty($_POST)) {
 	echo '<div style="width: 49%; float: right; border: solid gray 1px; padding: 5px;">';
 	if (isset($_POST['code'])) {
 		ob_start();
-		$result = eval($_POST['code']);
+		$result = eval(stripslashes($_POST['code']));
 		if ($result === false) {
 			echo '<p style="color: red; font-size: 1.1em;">Error</p>';
 		}
-		echo nl2br(str_replace(' ', '&nbsp;', htmlentities(ob_get_clean())));
+		//echo nl2br(str_replace(' ', '&nbsp;', htmlentities(ob_get_clean())));
+		echo ob_get_clean();
 	}
 	echo '</div>';
 }
